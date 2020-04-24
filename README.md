@@ -13,7 +13,7 @@ git clone https://github.com/zhao19991111/hack-now/
 ### 2. Check the front end
 
 ```
-cd frontend
+cd frontend/expo
 ```
 
 ### 3. Download dependencies
@@ -54,7 +54,13 @@ git clone https://github.com/zhao19991111/hack-now/
 cd backend
 ```
 
-### 3. Initialize the backend
+### 3. Download dependencies
+
+```
+pip install -r requirements
+```
+
+### 4. Initialize the backend
 
 ```
 python start.py
@@ -65,6 +71,22 @@ python start.py
 ### Prettier
 
 Use vscode pluggin "prettier" to make the code format consistent between different platforms
+
+### Dependencies
+
+Dependencies for javascript are managed by npm and yarn.
+Dependencies for python are saved in requirements.txt in the root directory
+To update dependencies:
+
+```
+pip freeze > "requirements.txt"
+```
+
+To install dependencies:
+
+```
+pip install -r "requirements.txt"
+```
 
 ## General Work Flow
 
