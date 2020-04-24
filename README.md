@@ -68,7 +68,7 @@ Use vscode pluggin "prettier" to make the code format consistent between differe
 
 ## General Work Flow
 
-To keep things organized, we're going to work with feature branches. This will allow us to clearly divide separate features and rollback whenever necessary. Our branch naming convention is <your_name>/<feature_name> for example, alex/notifications.
+To keep things organized, we're going to work with feature branches. This will allow us to clearly divide separate features and rollback whenever necessary. Our branch naming convention is <your_name>/<feature_name> for example, ricky/webscraping.
 
 1. Create a new branch
 
