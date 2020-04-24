@@ -1,6 +1,6 @@
 # Hack Now Repo
 
-A web app to search for items from grocery nearby. Check store inventory and build up your shopping list with real time information during this coronavirus crisis.
+A web app to search for items from grocery stores nearby. Check store inventory and build up your shopping list with real time information during this coronavirus crisis.
 
 ## Front End Initialization
 
