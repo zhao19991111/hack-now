@@ -75,7 +75,8 @@ Use vscode pluggin "prettier" to make the code format consistent between differe
 ### Dependencies
 
 Dependencies for javascript are managed by npm and yarn.
-Dependencies for python are saved in requirements.txt in the root directory
+Dependencies for python are saved in requirements.txt in the root directory.
+
 To update dependencies:
 
 ```
