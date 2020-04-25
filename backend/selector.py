@@ -171,4 +171,4 @@ def searchWithIds(productName, number, _zip, retailer="walmart",):
 # print(target_id_scraper("milk", 4))
 # print(walmart_id_scraper("biscuit", 4))
 # print(cvs_id_scraper("biscuit", 4))
-print(searchWithIds("milk", 5, "90024", "walmart"))
+print(searchWithIds("butter", 5, "27708", "walmart"))
