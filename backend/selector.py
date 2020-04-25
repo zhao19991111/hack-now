@@ -8,7 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 def target_id_scraper(productName, num):
-    browser = webdriver.Chrome()
+    browser = webdriver.PhantomJS()
     browser.get("https://www.target.com/s?searchTerm={0}".format(productName))
     try:
         product_id_list = []
@@ -38,7 +38,7 @@ def target_id_scraper(productName, num):
 
 
 def walmart_id_scraper(productName, num):
-    browser = webdriver.Chrome()
+    browser = webdriver.PhantomJS()
     browser.get(
         "https://www.walmart.com/search/?query={0}".format(productName))
     try:
@@ -56,7 +56,7 @@ def walmart_id_scraper(productName, num):
 
 
 def cvs_id_scraper(productName, num):
-    browser = webdriver.Chrome()
+    browser = webdriver.PhantomJS()
     browser.get(
         "https://www.cvs.com/search/?searchTerm={0}".format(productName))
     try:
@@ -77,7 +77,7 @@ def cvs_id_scraper(productName, num):
 
 
 def brickseek_scraper(productId, _zip, retailer):
-    browser = webdriver.Chrome()
+    browser = webdriver.PhantomJS()
     browser.get("http://brickseek.com/{0}-inventory-checker/?sku={1}-{2}-{3}".format(
         retailer,
         productId[0:3], productId[3:5], productId[5:9]))
