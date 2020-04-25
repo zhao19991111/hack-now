@@ -7,7 +7,7 @@ from selenium.webdriver.chrome.options import Options
 
 # return: list of productIds of this product
 chrome_options = Options()
-# chrome_options.add_argument("--headless")
+chrome_options.add_argument("--headless")
 
 
 def target_id_scraper(productName, num):
