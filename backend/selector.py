@@ -7,7 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 # return: list of productIds of this product
 
 
-def target_sku_scraper(productName, num):
+def target_id_scraper(productName, num):
     browser = webdriver.Chrome()
     browser.get("https://www.target.com/s?searchTerm={0}".format(productName))
     try:
@@ -111,4 +111,4 @@ def brickseek_scraper(productId, retailor):
 
 
 # print(brickseek_scraper("063000577", "target"))
-print(target_sku_scraper("milk", 4))
+print(target_id_scraper("milk", 4))
