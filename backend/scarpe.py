@@ -28,6 +28,7 @@ def Target(SKU, ZIP):
     }
     res = requests.post(
         'http://brickseek.com/target-inventory-checker/?sku='.format(str(SKU)), data=data)
+    print(res)
     page = bs4.BeautifulSoup(res.text, "lxml")
     Information = {
         'Discounted': str(str(page.select('.post-content div div div div')).partition('<b>Discounted: </b> ')[2]).partition('</div>, <div style="width: ')[0],
@@ -108,3 +109,6 @@ def Staples(SKU, ZIP):
             print(Inventory)
         except:
             pass
+
+
+Target('056-02-0212', '27708')
