@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import sys
+from firebase import firebase
 
 # [START functions_helloworld_http]
 # [START functions_http_content]
