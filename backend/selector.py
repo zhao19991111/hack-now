@@ -6,21 +6,26 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 
 # return: list of productIds of this product
+CHROMEDRIVER_PATH = '/usr/local/bin/chromedriver'
+WINDOW_SIZE = "1920,1080"
 chrome_options = Options()
 chrome_options.add_argument("--headless")
-
+chrome_options.add_argument("--window-size=%s" % WINDOW_SIZE)
+chrome_options.add_argument('--no-sandbox')
 
 def target_id_scraper(productName, num):
-    browser = webdriver.Chrome(options=chrome_options)
+    browser = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH,options=chrome_options)
     browser.get("https://www.target.com/s?searchTerm={0}".format(productName))
     try:
         product_id_list = []
-        waitItem = WebDriverWait(browser, 30).until(
+        waitItem = WebDriverWait(browser, 50).until(
             EC.presence_of_element_located(
                 (By.CSS_SELECTOR, "h2.Heading__StyledHeading-sc-1m9kw5a-0.eZNcif.hideAuxtext"))
         )
-        links = browser.find_elements(
-            By.CSS_SELECTOR, "a.Link-sc-1khjl8b-0.kTulu.h-display-block")
+        links = WebDriverWait(browser, 50).until(
+            EC.presence_of_all_elements_located(
+                (By.CSS_SELECTOR, "a.Link-sc-1khjl8b-0.kTulu.h-display-block"))
+        )
         itemUrl_list = []
         for i in range(num):
             itemUrl_list.append(links[i].get_attribute("href"))
@@ -43,12 +48,12 @@ def target_id_scraper(productName, num):
 
 
 def walmart_id_scraper(productName, num):
-    browser = webdriver.Chrome(options=chrome_options)
+    browser = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH,options=chrome_options)
     browser.get(
         "https://www.walmart.com/search/?query={0}".format(productName))
     try:
         product_id_list = []
-        links = WebDriverWait(browser, 30).until(
+        links = WebDriverWait(browser, 50).until(
             EC.presence_of_all_elements_located(
                 (By.CSS_SELECTOR, "a.search-result-productimage.gridview.display-block"))
         )
@@ -61,12 +66,12 @@ def walmart_id_scraper(productName, num):
 
 
 def cvs_id_scraper(productName, num):
-    browser = webdriver.Chrome(options=chrome_options)
+    browser = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH,options=chrome_options)
     browser.get(
         "https://www.cvs.com/search/?searchTerm={0}".format(productName))
     try:
         product_id_list = []
-        links = WebDriverWait(browser, 30).until(
+        links = WebDriverWait(browser, 50).until(
             EC.presence_of_all_elements_located(
                 (By.CSS_SELECTOR, "a.css-4rbku5.css-18t94o4.css-1dbjc4n.r-14lw9ot.r-1lz4bg0.r-rs99b7.r-s211iu.r-1loqt21.r-1pi2tsx.r-1udh08x.r-19yat4t.r-1j3t67a.r-1otgn73.r-13qz1uu")
             )
@@ -82,7 +87,7 @@ def cvs_id_scraper(productName, num):
 
 
 def brickseek_scraper(productId, _zip, retailer):
-    browser = webdriver.Chrome(options=chrome_options)
+    browser = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH,options=chrome_options)
     browser.get("http://brickseek.com/{0}-inventory-checker/?sku={1}-{2}-{3}".format(
         retailer,
         productId[0:3], productId[3:5], productId[5:9]))
@@ -150,7 +155,8 @@ def brickseek_scraper(productId, _zip, retailer):
             "address": addr_list,
             "availability": available_list,
             "distance": distance_list,
-            "price": price_list
+            "price": price_list,
+            "zipcode" : str(_zip)
         }
     except:
         return {}
@@ -161,23 +167,20 @@ def brickseek_scraper(productId, _zip, retailer):
 def searchWithIds(productName, number, _zip, retailer):
     search_result = []
     product_id_list = []
-    try:
-        if retailer == "walmart":
-            product_id_list = walmart_id_scraper(productName, number)
-        elif retailer == "target":
-            product_id_list = target_id_scraper(productName, number)
-        elif retailer == "cvs":
-            product_id_list = cvs_id_scraper(productName, number)
-        for productId in product_id_list:
-            print("Search with id: {0}".format(productId))
-            search_result.append(brickseek_scraper(productId, _zip, retailer))
-        return search_result
-    except:
-        return []
+    if retailer == "walmart":
+       product_id_list = walmart_id_scraper(productName, number)
+    elif retailer == "target":
+       product_id_list = target_id_scraper(productName, number)
+    elif retailer == "cvs":
+       product_id_list = cvs_id_scraper(productName, number)
+    for productId in product_id_list:
+       print("Search with id: {0}".format(productId))
+       search_result.append(brickseek_scraper(productId, _zip, retailer))
+    return search_result
 
 
 # print(brickseek_scraper("063000577", "90024", "target"))
 # print(target_id_scraper("milk", 4))
 # print(walmart_id_scraper("biscuit", 4))
 # print(cvs_id_scraper("biscuit", 4))
-print(searchWithIds("biscuit", 5, "90024", "walmart"))
+print(searchWithIds("biscuit", 5, "90024", "cvs"))
