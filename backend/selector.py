@@ -137,6 +137,7 @@ def brickseek_scraper(productId, _zip, retailer):
         for i in range(len(dollar_list)):
             price_list.append(int(dollar_list[i]) + int(cent_list[i]) / 10)
         return {
+            "product_id": productId,
             "imageUrl": imageUrl,
             "address": addr_list,
             "availability": available_list,
@@ -170,5 +171,5 @@ def searchWithIds(productName, number, _zip, retailer="walmart",):
 # print(brickseek_scraper("063000577", "90024", "target"))
 # print(target_id_scraper("milk", 4))
 # print(walmart_id_scraper("biscuit", 4))
-# print(cvs_id_scraper("biscuit", 4))
+print(cvs_id_scraper("biscuit", 4))
 print(searchWithIds("milk", 5, "90024", "walmart"))

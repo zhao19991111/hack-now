@@ -23,7 +23,7 @@ list_of_items = [
     'prepared food'
 ]
 
-
+# seek-2222
 # Use the application default credentials
 cred = credentials.ApplicationDefault()
 firebase_admin.initialize_app(cred, {
