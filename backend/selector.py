@@ -34,19 +34,56 @@ def target_id_scraper(productName, num):
                     product_id_list.append("".join(parts))
         return product_id_list
     finally:
-        browser.quit()
+        browser.close()
+
+
+def walmart_id_scraper(productName, num):
+    browser = webdriver.Chrome()
+    browser.get(
+        "https://www.walmart.com/search/?query={0}".format(productName))
+    try:
+        product_id_list = []
+        links = WebDriverWait(browser, 100).until(
+            EC.presence_of_all_elements_located(
+                (By.CSS_SELECTOR, "a.search-result-productimage.gridview.display-block"))
+        )
+        for i in range(num):
+            product_id_list.append(
+                links[i].get_attribute("href").split("/")[-1].split("?")[0])
+        return product_id_list
+    finally:
+        browser.close()
+
+
+def cvs_id_scraper(productName, num):
+    browser = webdriver.Chrome()
+    browser.get(
+        "https://www.cvs.com/search/?searchTerm={0}".format(productName))
+    try:
+        product_id_list = []
+        links = WebDriverWait(browser, 100).until(
+            EC.presence_of_all_elements_located(
+                (By.CSS_SELECTOR, "a.css-4rbku5.css-18t94o4.css-1dbjc4n.r-14lw9ot.r-1lz4bg0.r-gxnn5r.r-fnigne.r-13yce4e.r-rs99b7.r-s211iu.r-1loqt21.r-18u37iz.r-1pi2tsx.r-a2tzq0.r-1udh08x.r-19yat4t.r-1j3t67a.r-1otgn73.r-13qz1uu")
+            )
+        )
+        for i in range(num):
+            product_id_list.append(links[i].get_attribute(
+                "href").split("/")[-1].split("-")[-1])
+        return product_id_list
+    finally:
+        browser.close()
 
 # return: a dictionary of this object
 
 
-def brickseek_scraper(productId, retailor):
+def brickseek_scraper(productId, _zip, retailer):
     browser = webdriver.Chrome()
     browser.get("http://brickseek.com/{0}-inventory-checker/?sku={1}-{2}-{3}".format(
-        retailor,
+        retailer,
         productId[0:3], productId[3:5], productId[5:9]))
     zipcode = browser.find_element(
         By.CSS_SELECTOR, "#inventory-checker-form-zip")
-    zipcode.send_keys("90024")
+    zipcode.send_keys(_zip)
     image = browser.find_element(
         By.CSS_SELECTOR, ".item-overview__image-wrap img"
     )
@@ -63,7 +100,7 @@ def brickseek_scraper(productId, retailor):
     cent_list = []
     price_list = []
     try:
-        browser.implicitly_wait(100)
+        browser.implicitly_wait(20)
         addr_eles = browser.find_elements(By.CLASS_NAME, "address")
         available_eles = browser.find_elements(
             By.CLASS_NAME, "availability-status-indicator__text"
@@ -106,9 +143,32 @@ def brickseek_scraper(productId, retailor):
             "distance": distance_list,
             "price": price_list
         }
+    except:
+        return {}
     finally:
-        browser.quit()
+        browser.close()
 
 
-# print(brickseek_scraper("063000577", "target"))
-print(target_id_scraper("milk", 4))
+def searchWithIds(productName, number, _zip, retailer="walmart",):
+    search_result = []
+    product_id_list = []
+    try:
+        if retailer == "walmart":
+            product_id_list = walmart_id_scraper(productName, number)
+        elif retailer == "target":
+            product_id_list = target_id_scraper(productName, number)
+        elif retailer == "cvs":
+            product_id_list = cvs_id_scraper(productName, number)
+        for productId in product_id_list:
+            print("Search with id: {0}".format(productId))
+            search_result.append(brickseek_scraper(productId, _zip, retailer))
+        return search_result
+    except:
+        return []
+
+
+# print(brickseek_scraper("063000577", "90024", "target"))
+# print(target_id_scraper("milk", 4))
+# print(walmart_id_scraper("biscuit", 4))
+# print(cvs_id_scraper("biscuit", 4))
+print(searchWithIds("milk", 5, "90024", "walmart"))
