@@ -116,7 +116,11 @@ def brickseek_scraper(productId, _zip, retailer):
         image = browser.find_element(
             By.CSS_SELECTOR, ".item-overview__image-wrap img"
         )
+        product = browser.find_element(
+            By.CSS_SELECTOR, "h2.item-overview__title"
+        )
         imageUrl = image.get_attribute("src")
+        productName = product.get_attribute("innerText").replace('"',"")
     except:
         return {}
     button = browser.find_element(
@@ -166,8 +170,9 @@ def brickseek_scraper(productId, _zip, retailer):
         for i in range(len(distance_list)):
             distance_list[i] = distance_list[i].replace("(", "").split(" ")[0]
         for i in range(len(dollar_list)):
-            price_list.append(int(dollar_list[i]) + int(cent_list[i]) / 10)
+            price_list.append(str(round(float(dollar_list[i]) + float(cent_list[i]) / 100, 1)))
         return {
+            "product_name": productName,
             "product_id": productId,
             "imageUrl": imageUrl,
             "address": addr_list,
@@ -201,5 +206,5 @@ def searchWithIds(productName, number, _zip, retailer):
 # print(target_id_scraper("milk", 4))
 # print(walmart_id_scraper2("milk", 4))
 # print(cvs_id_scraper("biscuit", 4))
-print(searchWithIds("milk", 5, "90024", "walmart"))
+print(searchWithIds("wine", 5, "90024", "walmart"))
 
