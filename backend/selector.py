@@ -168,11 +168,7 @@ def brickseek_scraper(productId, _zip, retailer):
         for i in range(len(dollar_list)):
             price_list.append(int(dollar_list[i]) + int(cent_list[i]) / 10)
         return {
-<<<<<<< HEAD
             "product_id": productId,
-=======
-            "productId": productId,
->>>>>>> d4c609e3a8ad44b3650aa04aa127d947c92ba39f
             "imageUrl": imageUrl,
             "address": addr_list,
             "availability": available_list,
