@@ -7,11 +7,8 @@ from selenium.webdriver.chrome.options import Options
 
 # return: list of productIds of this product
 CHROMEDRIVER_PATH = '/usr/local/bin/chromedriver'
-WINDOW_SIZE = "1920,1080"
 chrome_options = Options()
 chrome_options.add_argument("--headless")
-chrome_options.add_argument("--window-size=%s" % WINDOW_SIZE)
-chrome_options.add_argument('--no-sandbox')
 
 def target_id_scraper(productName, num):
     browser = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH,options=chrome_options)
@@ -64,6 +61,27 @@ def walmart_id_scraper(productName, num):
     finally:
         browser.close()
 
+def walmart_id_scraper2(productName, num):
+    browser = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH,options=chrome_options)
+    browser.get("https://brickseek.com/walmart-inventory-checker/")
+    link = browser.find_element(
+            By.CSS_SELECTOR, "span.inventory-checker-form__launch-sku-finder.js-link")
+    link.click()
+    inputBox = browser.find_element(
+            By.ID, "sku-finder-form-query")
+    inputBox.send_keys(productName)
+    inputBox.submit()
+    try:
+        product_id_list = []
+        sku_eles = WebDriverWait(browser, 10).until(
+            EC.presence_of_all_elements_located(
+                (By.CLASS_NAME, "sku-finder-form-results__name"))
+            )
+        for i in range(num):
+            product_id_list.append(sku_eles[i].get_attribute("innerText").replace(" ","").split("SKU:")[1])
+        return product_id_list
+    finally:
+        browser.close()
 
 def cvs_id_scraper(productName, num):
     browser = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH,options=chrome_options)
@@ -168,7 +186,7 @@ def searchWithIds(productName, number, _zip, retailer):
     search_result = []
     product_id_list = []
     if retailer == "walmart":
-       product_id_list = walmart_id_scraper(productName, number)
+       product_id_list = walmart_id_scraper2(productName, number)
     elif retailer == "target":
        product_id_list = target_id_scraper(productName, number)
     elif retailer == "cvs":
@@ -181,6 +199,7 @@ def searchWithIds(productName, number, _zip, retailer):
 
 # print(brickseek_scraper("063000577", "90024", "target"))
 # print(target_id_scraper("milk", 4))
-# print(walmart_id_scraper("biscuit", 4))
+# print(walmart_id_scraper2("milk", 4))
 # print(cvs_id_scraper("biscuit", 4))
-print(searchWithIds("biscuit", 5, "90024", "cvs"))
+print(searchWithIds("milk", 5, "90024", "walmart"))
+
