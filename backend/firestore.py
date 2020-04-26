@@ -61,3 +61,4 @@ for item in list_of_items:
                 item, market, postcode))
             data = searchWithIds(item, num_item, postcode, market)
             db.store("items", item, data)
+
