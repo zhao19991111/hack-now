@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
-
+import json
 # return: list of productIds of this product
 CHROMEDRIVER_PATH = '/usr/local/bin/chromedriver'
 chrome_options = Options()
@@ -206,5 +206,5 @@ def searchWithIds(productName, number, _zip, retailer):
 # print(target_id_scraper("milk", 4))
 # print(walmart_id_scraper2("milk", 4))
 # print(cvs_id_scraper("biscuit", 4))
-print(searchWithIds("wine", 5, "90024", "walmart"))
+print(json.dumps(searchWithIds("wine", 5, "90024", "walmart"), sort_keys=True, indent=4))
 
