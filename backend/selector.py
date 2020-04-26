@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
-import json
+import json, time
 # return: list of productIds of this product
 CHROMEDRIVER_PATH = '/usr/local/bin/chromedriver'
 chrome_options = Options()
@@ -15,14 +15,13 @@ def target_id_scraper(productName, num):
     browser.get("https://www.target.com/s?searchTerm={0}".format(productName))
     try:
         product_id_list = []
+        browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(1)
         waitItem = WebDriverWait(browser, 50).until(
             EC.presence_of_element_located(
                 (By.CSS_SELECTOR, "h2.Heading__StyledHeading-sc-1m9kw5a-0.eZNcif.hideAuxtext"))
         )
-        links = WebDriverWait(browser, 50).until(
-            EC.presence_of_all_elements_located(
-                (By.CSS_SELECTOR, "a.Link-sc-1khjl8b-0.kTulu.h-display-block"))
-        )
+        links = browser.find_elements(By.CSS_SELECTOR, "a.Link-sc-1khjl8b-0.kTulu.h-display-block")
         itemUrl_list = []
         for i in range(num):
             itemUrl_list.append(links[i].get_attribute("href"))
@@ -50,6 +49,8 @@ def walmart_id_scraper(productName, num):
         "https://www.walmart.com/search/?query={0}".format(productName))
     try:
         product_id_list = []
+        browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(1)
         links = WebDriverWait(browser, 50).until(
             EC.presence_of_all_elements_located(
                 (By.CSS_SELECTOR, "a.search-result-productimage.gridview.display-block"))
@@ -59,6 +60,7 @@ def walmart_id_scraper(productName, num):
                 links[i].get_attribute("href").split("/")[-1].split("?")[0])
         return product_id_list
     finally:
+        return []
         browser.close()
 
 def walmart_id_scraper2(productName, num):
@@ -81,19 +83,23 @@ def walmart_id_scraper2(productName, num):
             product_id_list.append(sku_eles[i].get_attribute("innerText").replace(" ","").split("SKU:")[1])
         return product_id_list
     finally:
+        return []
         browser.close()
 
 def cvs_id_scraper(productName, num):
     browser = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH,options=chrome_options)
     browser.get(
-        "https://www.cvs.com/search/?searchTerm={0}".format(productName))
+        "https://www.cvs.com/search?searchTerm={0}".format(productName))
     try:
         product_id_list = []
-        links = WebDriverWait(browser, 50).until(
+        browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(1)
+        WebDriverWait(browser, 30).until(
             EC.presence_of_all_elements_located(
                 (By.CSS_SELECTOR, "a.css-4rbku5.css-18t94o4.css-1dbjc4n.r-14lw9ot.r-1lz4bg0.r-rs99b7.r-s211iu.r-1loqt21.r-1pi2tsx.r-1udh08x.r-19yat4t.r-1j3t67a.r-1otgn73.r-13qz1uu")
             )
         )
+        links = browser.find_elements(By.CSS_SELECTOR, "a.css-4rbku5.css-18t94o4.css-1dbjc4n.r-14lw9ot.r-1lz4bg0.r-rs99b7.r-s211iu.r-1loqt21.r-1pi2tsx.r-1udh08x.r-19yat4t.r-1j3t67a.r-1otgn73.r-13qz1uu")
         for i in range(num):
             product_id_list.append(links[i].get_attribute(
                 "href").split("/")[-1].split("-")[-1])
@@ -201,10 +207,13 @@ def searchWithIds(productName, number, _zip, retailer):
        search_result.append(brickseek_scraper(productId, _zip, retailer))
     return search_result
 
-
+def test():
+    print(json.dumps(searchWithIds("chips", 5, "90024", "target"), sort_keys=True, indent=4))
+    print(json.dumps(searchWithIds("fruit", 5, "90024", "walmart"), sort_keys=True, indent=4))
+    print(json.dumps(searchWithIds("vitamin", 5, "90024", "cvs"), sort_keys=True, indent=4))
 # print(brickseek_scraper("063000577", "90024", "target"))
 # print(target_id_scraper("milk", 4))
 # print(walmart_id_scraper2("milk", 4))
-# print(cvs_id_scraper("biscuit", 4))
-print(json.dumps(searchWithIds("wine", 5, "90024", "walmart"), sort_keys=True, indent=4))
+print(cvs_id_scraper("biscuit", 4))
 
+#test()
